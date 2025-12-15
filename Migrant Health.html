@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MigrantHealth - Digital Health Records</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .demo-badge {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #ff6b6b;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    
+    <!-- Login/Register Page -->
+    <div id="loginPage" class="min-h-screen gradient-bg flex items-center justify-center p-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <div class="text-6xl mb-4">🏥</div>
+                <h1 class="text-4xl font-bold text-white mb-4">MigrantHealth</h1>
+                <p class="text-white text-lg">Digital Health Records for Everyone</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Patient Login -->
+                <div class="bg-white rounded-2xl card-shadow p-6">
+                    <div class="text-center mb-6">
+                        <div class="text-4xl mb-3">👤</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Patient Login</h2>
+                        <p class="text-gray-600 text-sm">Access your health records</p>
+                    </div>
+                    
+                    <form id="patientLoginForm" class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Patient ID</label>
+                            <input type="text" id="patientId" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="MH-2024-XXX">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Password</label>
+                            <input type="password" id="patientPassword" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Enter password">
+                        </div>
+                        <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold transition duration-200">
+                            Login as Patient
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Doctor Login -->
+                <div class="bg-white rounded-2xl card-shadow p-6">
+                    <div class="text-center mb-6">
+                        <div class="text-4xl mb-3">👨‍⚕️</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Doctor Login</h2>
+                        <p class="text-gray-600 text-sm">Access patient records</p>
+                    </div>
+                    
+                    <form id="doctorLoginForm" class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Doctor ID</label>
+                            <input type="text" id="doctorId" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="DR-XXX">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Password</label>
+                            <input type="password" id="doctorPassword" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="Enter password">
+                        </div>
+                        <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg font-semibold transition duration-200">
+                            Login as Doctor
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- New Patient Registration -->
+                <div class="bg-white rounded-2xl card-shadow p-6">
+                    <div class="text-center mb-6">
+                        <div class="text-4xl mb-3">📝</div>
+                        <h2 class="text-2xl font-bold text-gray-800">New Patient</h2>
+                        <p class="text-gray-600 text-sm">Create your health record</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="text-center">
+                            <div class="text-6xl mb-4">🆕</div>
+                            <p class="text-gray-600 mb-4">Don't have an account yet?</p>
+                        </div>
+                        <button onclick="showRegister()" class="w-full bg-purple-500 hover:bg-purple-600 text-white py-3 px-6 rounded-lg font-semibold transition duration-200">
+                            Register New Patient
+                        </button>
+                        </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center text-white">
+                <p>🔒 Secure • 🌍 Multilingual • 📱 Mobile Friendly</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Registration -->
+    <div id="registerPage" class="hidden min-h-screen bg-gradient-to-br from-purple-400 to-pink-400 p-4">
+        <div class="max-w-2xl mx-auto bg-white rounded-2xl card-shadow p-8 mt-8">
+            <div class="text-center mb-8">
+                <div class="text-4xl mb-4">📝</div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">New Patient Registration</h2>
+                <p class="text-gray-600">Please fill in your basic information</p>
+            </div>
+            
+            <form id="registrationForm" class="space-y-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Full Name *</label>
+                        <input type="text" id="fullName" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Enter your full name">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Date of Birth *</label>
+                        <input type="date" id="dateOfBirth" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Country of Origin *</label>
+                        <select id="country" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            <option value="">Select Country</option>
+                            <option value="syria">Syria</option>
+                            <option value="afghanistan">Afghanistan</option>
+                            <option value="somalia">Somalia</option>
+                            <option value="venezuela">Venezuela</option>
+                            <option value="myanmar">Myanmar</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Phone Number *</label>
+                        <input type="tel" id="phone" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="+1 (555) 000-0000">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-gray-700 font-semibold mb-2">Emergency Contact</label>
+                        <input type="text" id="emergencyContact" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Name and phone number">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-gray-700 font-semibold mb-2">Create Password *</label>
+                        <input type="password" id="newPassword" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Create a secure password">
+                    </div>
+                </div>
+                
+                <div id="registrationMessage" class="hidden p-4 rounded-lg"></div>
+                
+                <div class="flex gap-4">
+                    <button type="submit" class="flex-1 bg-purple-500 hover:bg-purple-600 text-white py-3 px-6 rounded-lg font-semibold transition duration-200">
+                        Complete Registration
+                    </button>
+                    <button type="button" onclick="showLogin()" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-lg font-semibold transition duration-200">
+                        Back to Login
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Patient Dashboard -->
+    <div id="patientDashboard" class="hidden min-h-screen bg-gray-100 flex">
+        <!-- Patient Sidebar -->
+        <div class="w-64 bg-white shadow-lg">
+            <div class="p-6 border-b">
+                <div class="flex items-center">
+                    <div class="text-2xl mr-3">🏥</div>
+                    <div>
+                        <h1 class="text-lg font-bold text-gray-800">MigrantHealth</h1>
+                        <p class="text-sm text-gray-600">Patient Portal</p>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="mt-6">
+                <button onclick="showPatientTab('dashboard')" id="patientDashboardTab" class="w-full text-left px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 border-r-2 border-transparent hover:border-blue-600">
+                    <div class="flex items-center">
+                        <span class="text-lg mr-3">📊</span>
+                        <span>Dashboard</span>
+                    </div>
+                </button>
+                <button onclick="showPatientTab('profile')" id="patientProfileTab" class="w-full text-left px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 border-r-2 border-transparent hover:border-blue-600">
+                    <div class="flex items-center">
+                        <span class="text-lg mr-3">👤</span>
+                        <span>My Profile</span>
+                    </div>
+                </button>
+                <button onclick="showPatientTab('records')" id="patientRecordsTab" class="w-full text-left px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 border-r-2 border-transparent hover:border-blue-600">
+                    <div class="flex items-center">
+                        <span class="text-lg mr-3">📋</span>
+                        <span>Medical Records</span>
+                    </div>
+                </button>
+                <button onclick="showPatientTab('appointments')" id="patientAppointmentsTab" class="w-full text-left px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 border-r-2 border-transparent hover:border-blue-600">
+                    <div class="flex items-center">
+                        <span class="text-lg mr-3">📅</span>
+                        <span>Appointments</span>
+                    </div>
+                </button>
+            </nav>
+            
+            <div class="absolute bottom-0 w-64 p-6 border-t">
+                <button onclick="showLogin()" class="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg">
+                    🚪 Logout
+                </button>
+            </div>
+        </div>
+        
+        <!-- Patient Main Content -->
+        <div class="flex-1 p-6">
+            <div class="mb-6">
+                <h2 id="patientWelcome" class="text-3xl font-bold text-gray-800 mb-2">Welcome! 👋</h2>
+                <p id="patientIdDisplay" class="text-gray-600">Please complete your profile</p>
+            </div>
+            
+            <!-- Patient Dashboard Tab -->
+            <div id="patientDashboardContent" class="space-y-6">
+                <!-- Stats Overview -->
+                <div class="bg-white rounded-xl card-shadow p-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Health Overview</h3>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-blue-50 p-6 rounded-lg">
+                            <div class="flex items-center mb-4">
+                                <span class="text-2xl mr-3">📋</span>
+                                <h4 class="text-lg font-semibold text-gray-800">Medical Records</h4>
+                            </div>
+                            <p class="text-3xl font-bold text-blue-600" id="recordsCount">0</p>
+                            <p class="text-sm text-gray-600">Total Records</p>
+                        </div>
+                        <div class="bg-green-50 p-6 rounded-lg">
+                            <div class="flex items-center mb-4">
+                                <span class="text-2xl mr-3">📅</span>
+                                <h4 class="text-lg font-semibold text-gray-800">Last Visit</h4>
+                            </div>
+                            <p class="text-lg font-bold text-green-600" id="lastVisit">No visits yet</p>
+                            <p class="text-sm text-gray-600">Recent Activity</p>
+                        </div>
+                        <div class="bg-purple-50 p-6 rounded-lg">
+                            <div class="flex items-center mb-4">
+                                <span class="text-2xl mr-3">👨‍⚕️</span>
+                                <h4 class="text-lg font-semibold text-gray-800">Doctors</h4>
+                            </div>
+                            <p class="text-3xl font-bold text-purple-600" id="doctorsCount">0</p>
+                            <p class="text-sm text-gray-600">Healthcare Providers</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="bg-white rounded-xl card-shadow p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Recent Activity</h3>
+                    <div id="recentActivity" class="space-y-3">
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                            <span class="text-2xl mr-3">👋</span>
+                            <div>
+                                <p class="font-semibold text-gray-800">Welcome to MigrantHealth!</p>
+                                <p class="text-sm text-gray-600">Your secure health records are ready</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Health Tips -->
+                <div class="bg-white rounded-xl card-shadow p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Health Tips</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-start p-3 bg-yellow-50 rounded-lg">
+                            <span class="text-xl mr-3">💡</span>
+                            <div>
+                                <p class="font-semibold text-gray-800">Keep Your Records Updated</p>
+                                <p class="text-sm text-gray-600">Make sure your emergency contact and personal information are current</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start p-3 bg-green-50 rounded-lg">
+                            <span class="text-xl mr-3">🏥</span>
+                            <div>
+                                <p class="font-semibold text-gray-800">Regular Checkups</p>
+                                <p class="text-sm text-gray-600">Schedule regular health checkups to maintain good health</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start p-3 bg-blue-50 rounded-lg">
+                            <span class="text-xl mr-3">🔒</span>
+                            <div>
+                                <p class="font-semibold text-gray-800">Privacy Control</p>
+                                <p class="text-sm text-gray-600">You can control which records are visible to healthcare providers</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Patient Profile Tab -->
+            <div id="patientProfileContent" class="hidden bg-white rounded-xl card-shadow p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800">My Profile</h3>
+                    <div class="flex items-center text-sm text-gray-600">
+                        <span class="text-green-500 mr-2">●</span>
+                        Profile Active
+                    </div>
+                </div>
+                
+                <form id="patientProfileForm" class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-2">Full Name *</label>
+                            <input type="text" id="patientNameField" placeholder="Enter your full name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-2">Patient ID</label>
+                            <input type="text" id="patientIdField" placeholder="Your Patient ID" class="w-full p-3 border border-gray-300 rounded-lg bg-gray-100" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-2">Age</label>
+                            <input type="text" id="patientAgeField" placeholder="Age will be calculated" class="w-full p-3 border border-gray-300 rounded-lg bg-gray-100" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-2">Country of Origin *</label>
+                            <select id="patientCountryField" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="">Select Country</option>
+                                <option value="syria">Syria</option>
+                                <option value="afghanistan">Afghanistan</option>
+                                <option value="somalia">Somalia</option>
+                                <option value="venezuela">Venezuela</option>
+                                <option value="myanmar">Myanmar</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-2">Phone Number *</label>
+                            <input type="tel" id="patientPhoneField" placeholder="Enter your phone number" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-2">Date of Birth</label>
+                            <input type="date" id="patientDobField" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-600 mb-2">Emergency Contact</label>
+                            <input type="text" id="patientEmergencyField" placeholder="Emergency contact name and phone number" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                    </div>
+                    
+                    <div id="profileUpdateMessage" class="hidden p-4 rounded-lg"></div>
+                    
+                    <div class="flex gap-4">
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold transition duration-200">
+                            💾 Update Profile
+                        </button>
+                        <button type="button" onclick="showPatientTab('dashboard')" class="bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-lg font-semibold transition duration-200">
+                            Back to Dashboard
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Profile Statistics -->
+                <div class="mt-8 pt-6 border-t border-gray-200">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Profile Statistics</h4>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-blue-50 p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-blue-600" id="profileCompleteness">85%</div>
+                            <div class="text-sm text-gray-600">Profile Complete</div>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-green-600" id="accountAge">New</div>
+                            <div class="text-sm text-gray-600">Account Age</div>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-purple-600" id="lastUpdated">Today</div>
+                            <div class="text-sm text-gray-600">Last Updated</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Patient Records Tab -->
+            <div id="patientRecordsContent" class="hidden bg-white rounded-xl card-shadow p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800">Medical Records</h3>
+                    <div class="text-sm text-gray-600">Privacy Controls</div>
+                </div>
+                
+                <div id="medicalRecordsList" class="space-y-4">
+                    <div class="text-center py-8 text-gray-500">
+                        <div class="text-4xl mb-4">📋</div>
+                        <p class="text-lg">No medical records yet</p>
+                        <p class="text-sm">Your medical records will appear here when doctors add them</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Patient Appointments Tab -->
+            <div id="patientAppointmentsContent" class="hidden bg-white rounded-xl card-shadow p-6">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6">Appointments</h3>
+                <div class="text-center py-8 text-gray-500">
+                    <div class="text-4xl mb-4">📅</div>
+                    <p class="text-lg">No appointments scheduled</p>
+                    <p class="text-sm">Appointment scheduling feature coming soon</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctor Dashboard -->
+    <div id="doctorDashboard" class="hidden min-h-screen bg-gray-100 flex">
+        <!-- Doctor Sidebar -->
+        <div class="w-64 bg-white shadow-lg">
+            <div class="p-6 border-b">
+                <div class="flex items-center">
+                    <div class="text-2xl mr-3">🏥</div>
+                    <div>
+                        <h1 class="text-lg font-bold text-gray-800">MigrantHealth</h1>
+                        <p class="text-sm text-gray-600">Doctor Portal</p>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="mt-6">
+                <button onclick="showDoctorTab('dashboard')" id="doctorDashboardTab" class="w-full text-left px-6 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 border-r-2 border-transparent hover:border-green-600">
+                    <div class="flex items-center">
+                        <span class="text-lg mr-3">📊</span>
+                        <span>Dashboard</span>
+                    </div>
+                </button>
+                <button onclick="showDoctorTab('profile')" id="profileTab" class="w-full text-left px-6 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 border-r-2 border-transparent hover:border-green-600">
+                    <div class="flex items-center">
+                        <span class="text-lg mr-3">👤</span>
+                        <span>My Profile</span>
+                    </div>
+                </button>
+                <button onclick="showDoctorTab('viewPatient')" id="viewPatientTab" class="w-full text-left px-6 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 border-r-2 border-transparent hover:border-green-600">
+                    <div class="flex items-center">
+                        <span class="text-lg mr-3">🔍</span>
+                        <span>View Patient</span>
+                    </div>
+                </button>
+                <button onclick="showDoctorTab('patients')" id="patientsTab" class="w-full text-left px-6 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 border-r-2 border-transparent hover:border-green-600">
+                    <div class="flex items-center">
+                        <span class="text-lg mr-3">👥</span>
+                        <span>My Patients</span>
+                    </div>
+                </button>
+            </nav>
+            
+            <div class="absolute bottom-0 w-64 p-6 border-t">
+                <button onclick="showLogin()" class="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg">
+                    🚪 Logout
+                </button>
+            </div>
+        </div>
+        
+        <!-- Doctor Main Content -->
+        <div class="flex-1 p-6">
+            <div class="mb-6">
+                <h2 id="doctorWelcome" class="text-3xl font-bold text-gray-800 mb-2">Doctor Portal 👨‍⚕️</h2>
+                <p id="doctorSubtitle" class="text-gray-600">Please complete your profile first</p>
+            </div>
+            
+            <!-- Doctor Dashboard Tab -->
+            <div id="doctorDashboardContent" class="space-y-6">
+                <!-- Stats Overview -->
+                <div class="bg-white rounded-xl card-shadow p-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Practice Overview</h3>
+                    <div class="grid md:grid-cols-4 gap-6">
+                        <div class="bg-blue-50 p-6 rounded-lg">
+                            <div class="flex items-center mb-4">
+                                <span class="text-2xl mr-3">👥</span>
+                                <h4 class="text-lg font-semibold text-gray-800">Total Patients</h4>
+                            </div>
+                            <p class="text-3xl font-bold text-blue-600" id="totalPatientsCount">0</p>
+                            <p class="text-sm text-gray-600">Under Your Care</p>
+                        </div>
+                        <div class="bg-green-50 p-6 rounded-lg">
+                            <div class="flex items-center mb-4">
+                                <span class="text-2xl mr-3">📋</span>
+                                <h4 class="text-lg font-semibold text-gray-800">Records Added</h4>
+                            </div>
+                            <p class="text-3xl font-bold text-green-600" id="recordsAddedCount">0</p>
+                            <p class="text-sm text-gray-600">This Month</p>
+                        </div>
+                        <div class="bg-purple-50 p-6 rounded-lg">
+                            <div class="flex items-center mb-4">
+                                <span class="text-2xl mr-3">🏥</span>
+                                <h4 class="text-lg font-semibold text-gray-800">Active Cases</h4>
+                            </div>
+                            <p class="text-3xl font-bold text-purple-600" id="activeCasesCount">0</p>
+                            <p class="text-sm text-gray-600">Ongoing Treatment</p>
+                        </div>
+                        <div class="bg-orange-50 p-6 rounded-lg">
+                            <div class="flex items-center mb-4">
+                                <span class="text-2xl mr-3">⚡</span>
+                                <h4 class="text-lg font-semibold text-gray-800">Emergency</h4>
+                            </div>
+                            <p class="text-3xl font-bold text-orange-600" id="emergencyCount">0</p>
+                            <p class="text-sm text-gray-600">This Week</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="bg-white rounded-xl card-shadow p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Recent Activity</h3>
+                    <div id="doctorRecentActivity" class="space-y-3">
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                            <span class="text-2xl mr-3">👋</span>
+                            <div>
+                                <p class="font-semibold text-gray-800">Welcome to MigrantHealth Doctor Portal!</p>
+                                <p class="text-sm text-gray-600">Complete your profile to start managing patients</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Patient Alerts -->
+                <div class="bg-white rounded-xl card-shadow p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Patient Alerts & Reminders</h3>
+                    <div id="patientAlerts" class="space-y-3">
+                        <div class="flex items-start p-3 bg-yellow-50 rounded-lg border-l-4 border-yellow-400">
+                            <span class="text-xl mr-3">⚠️</span>
+                            <div>
+                                <p class="font-semibold text-gray-800">Follow-up Reminders</p>
+                                <p class="text-sm text-gray-600">No pending follow-ups at this time</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start p-3 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+                            <span class="text-xl mr-3">💉</span>
+                            <div>
+                                <p class="font-semibold text-gray-800">Vaccination Schedules</p>
+                                <p class="text-sm text-gray-600">All patients up to date</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start p-3 bg-red-50 rounded-lg border-l-4 border-red-400">
+                            <span class="text-xl mr-3">🚨</span>
+                            <div>
+                                <p class="font-semibold text-gray-800">Critical Cases</p>
+                                <p class="text-sm text-gray-600">No critical cases requiring immediate attention</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Doctor Profile Tab -->
+            <div id="doctorProfile" class="hidden bg-white rounded-xl card-shadow p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800">Doctor Profile</h3>
+                    <div class="flex items-center text-sm text-gray-600">
+                        <span id="profileStatus" class="text-orange-500 mr-2">●</span>
+                        <span id="profileStatusText">Profile Incomplete</span>
+                    </div>
+                </div>
+                
+                <form id="doctorProfileForm" class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Full Name *</label>
+                            <input type="text" id="doctorFullName" required placeholder="Enter your full name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Specialization *</label>
+                            <select id="doctorSpecialization" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                                <option value="">Select Specialization</option>
+                                <option value="Internal Medicine">Internal Medicine</option>
+                                <option value="Pediatrics">Pediatrics</option>
+                                <option value="Cardiology">Cardiology</option>
+                                <option value="Neurology">Neurology</option>
+                                <option value="Psychiatry">Psychiatry</option>
+                                <option value="Emergency Medicine">Emergency Medicine</option>
+                                <option value="Family Medicine">Family Medicine</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">License Number *</label>
+                            <input type="text" id="doctorLicense" required placeholder="MD-XXXX-XXX" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Hospital/Clinic *</label>
+                            <input type="text" id="doctorHospital" required placeholder="Enter hospital or clinic name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Phone Number *</label>
+                            <input type="tel" id="doctorPhone" required placeholder="+1 (555) 000-0000" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Email Address *</label>
+                            <input type="email" id="doctorEmail" required placeholder="doctor@hospital.com" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Years of Experience</label>
+                            <input type="number" id="doctorExperience" min="0" max="50" placeholder="Years in practice" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Languages Spoken</label>
+                            <input type="text" id="doctorLanguages" placeholder="English, Spanish, Arabic..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Professional Bio</label>
+                        <textarea id="doctorBio" rows="4" placeholder="Brief description of your background, expertise, and approach to patient care..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"></textarea>
+                    </div>
+                    
+                    <div id="doctorProfileMessage" class="hidden p-4 rounded-lg"></div>
+                    
+                    <div class="flex gap-4">
+                        <button type="submit" class="bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg font-semibold transition duration-200">
+                            💾 Update Profile
+                        </button>
+                        <button type="button" onclick="showDoctorTab('dashboard')" class="bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-lg font-semibold transition duration-200">
+                            Back to Dashboard
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Profile Statistics -->
+                <div class="mt-8 pt-6 border-t border-gray-200">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Profile Statistics</h4>
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <div class="bg-blue-50 p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-blue-600" id="profileCompleteness">0%</div>
+                            <div class="text-sm text-gray-600">Profile Complete</div>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-green-600" id="patientsServed">0</div>
+                            <div class="text-sm text-gray-600">Patients Served</div>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-purple-600" id="recordsCreated">0</div>
+                            <div class="text-sm text-gray-600">Records Created</div>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-orange-600" id="accountAge">New</div>
+                            <div class="text-sm text-gray-600">Account Age</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Professional Information Display -->
+                <div id="professionalInfo" class="mt-8 pt-6 border-t border-gray-200 hidden">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Professional Summary</h4>
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <div id="professionalSummary" class="space-y-3">
+                            <!-- Will be populated when profile is saved -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- View Patient Tab -->
+            <div id="viewPatientContent" class="hidden bg-white rounded-xl card-shadow p-6">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6">Patient Management</h3>
+                
+                <!-- Patient Search Section -->
+                <div class="mb-8 bg-gray-50 p-6 rounded-lg">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Search Patient</h4>
+                    <div class="flex gap-4">
+                        <input type="text" id="patientSearchId" placeholder="Enter Patient ID (e.g., MH-2024-XXX)" class="flex-1 p-3 border border-gray-300 rounded-lg">
+                        <button onclick="loadPatientData()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold">
+                            🔍 Search Patient
+                        </button>
+                    </div>
+                    <div id="searchMessage" class="hidden mt-3 p-3 rounded-lg"></div>
+                </div>
+                
+                <!-- Patient Information Display -->
+                <div id="patientData" class="hidden">
+                    <div class="border-t pt-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h4 id="patientDataName" class="text-xl font-bold text-gray-800">Patient Information</h4>
+                            <div class="flex gap-3">
+                                <button onclick="showAddRecordForm()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-semibold">
+                                    📝 Add New Record
+                                </button>
+                                <button onclick="clearPatientView()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-semibold">
+                                    🔄 Clear View
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="grid lg:grid-cols-3 gap-6 mb-6">
+                            <!-- Patient Basic Info -->
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-3 flex items-center">
+                                    <span class="text-lg mr-2">👤</span>
+                                    Basic Information
+                                </h5>
+                                <div id="patientBasicInfo" class="space-y-2 text-sm">
+                                    <p class="text-gray-600">No patient information available</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Medical Records Summary -->
+                            <div class="bg-green-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-3 flex items-center">
+                                    <span class="text-lg mr-2">📊</span>
+                                    Records Summary
+                                </h5>
+                                <div id="patientRecordsSummary" class="space-y-2 text-sm">
+                                    <p class="text-gray-600">No medical records found</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Quick Actions -->
+                            <div class="bg-purple-50 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-800 mb-3 flex items-center">
+                                    <span class="text-lg mr-2">⚡</span>
+                                    Quick Actions
+                                </h5>
+                                <div class="space-y-2">
+                                    <button onclick="showAddRecordForm()" class="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 px-3 rounded text-sm">
+                                        Add Checkup
+                                    </button>
+                                    <button onclick="showAddRecordForm('vaccination')" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded text-sm">
+                                        Add Vaccination
+                                    </button>
+                                    <button onclick="showAddRecordForm('emergency')" class="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-3 rounded text-sm">
+                                        Emergency Record
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Medical Records History -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-6">
+                            <h5 class="font-semibold text-gray-800 mb-4 flex items-center">
+                                <span class="text-lg mr-2">📋</span>
+                                Complete Medical History
+                            </h5>
+                            <div id="patientDetailedRecords" class="space-y-4">
+                                <p class="text-gray-500 text-center py-8">No medical records to display</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Add New Record Form (Initially Hidden) -->
+                <div id="addRecordForm" class="hidden mt-8 bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="text-lg font-bold text-gray-800">Add New Medical Record</h4>
+                        <button onclick="hideAddRecordForm()" class="text-gray-500 hover:text-gray-700">
+                            <span class="text-xl">✕</span>
+                        </button>
+                    </div>
+                    
+                    <form id="updateRecordForm" class="space-y-4">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Patient ID *</label>
+                                <input type="text" id="updatePatientId" required readonly class="w-full p-3 border border-gray-300 rounded-lg bg-gray-100">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Record Type *</label>
+                                <select id="recordType" required class="w-full p-3 border border-gray-300 rounded-lg">
+                                    <option value="">Select Record Type</option>
+                                    <option value="checkup">General Checkup</option>
+                                    <option value="vaccination">Vaccination</option>
+                                    <option value="consultation">Specialist Consultation</option>
+                                    <option value="emergency">Emergency Visit</option>
+                                    <option value="mental-health">Mental Health</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Diagnosis *</label>
+                            <input type="text" id="diagnosis" required class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Primary diagnosis">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Medical Notes *</label>
+                            <textarea id="medicalNotes" required rows="4" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Enter detailed medical notes, symptoms, observations..."></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Treatment Plan</label>
+                            <textarea id="treatmentPlan" rows="3" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Prescribed treatment, medications, follow-up instructions..."></textarea>
+                        </div>
+                        
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                            <p class="text-red-800 font-semibold">⚠️ Important Notice</p>
+                            <p class="text-red-700 text-sm">Once this record is saved, it cannot be edited. Please review all information carefully before submitting.</p>
+                        </div>
+                        
+                        <div id="updateMessage" class="hidden p-4 rounded-lg"></div>
+                        
+                        <div class="flex gap-4">
+                            <button type="submit" class="flex-1 bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg font-semibold">
+                                💾 Save Medical Record
+                            </button>
+                            <button type="button" onclick="hideAddRecordForm()" class="bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-lg font-semibold">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- My Patients Tab -->
+            <div id="patientsContent" class="hidden bg-white rounded-xl card-shadow p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800">My Patients</h3>
+                    <div class="flex items-center text-sm text-gray-600">
+                        <span class="text-green-500 mr-2">●</span>
+                        <span id="myPatientsCount">0</span> Active Patients
+                    </div>
+                </div>
+                
+                <!-- Patient Search and Filter -->
+                <div class="mb-6 bg-gray-50 p-4 rounded-lg">
+                    <div class="flex gap-4">
+                        <input type="text" id="patientFilter" placeholder="Search patients by name or ID..." class="flex-1 p-3 border border-gray-300 rounded-lg">
+                        <select id="statusFilter" class="p-3 border border-gray-300 rounded-lg">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="follow-up">Follow-up Needed</option>
+                            <option value="critical">Critical</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Patients List -->
+                <div id="myPatientsList" class="space-y-4">
+                    <div class="text-center py-8 text-gray-500">
+                        <div class="text-4xl mb-4">👥</div>
+                        <p class="text-lg">No patients assigned yet</p>
+                        <p class="text-sm">Patients will appear here when you add medical records for them</p>
+                    </div>
+                </div>
+                
+                <!-- Patient Statistics -->
+                <div class="mt-8 pt-6 border-t border-gray-200">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Patient Statistics</h4>
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <div class="bg-blue-50 p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-blue-600" id="newPatientsCount">0</div>
+                            <div class="text-sm text-gray-600">New This Month</div>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-green-600" id="followUpCount">0</div>
+                            <div class="text-sm text-gray-600">Follow-ups Due</div>
+                        </div>
+                        <div class="bg-yellow-50 p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-yellow-600" id="vaccinationsDue">0</div>
+                            <div class="text-sm text-gray-600">Vaccinations Due</div>
+                        </div>
+                        <div class="bg-red-50 p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-red-600" id="criticalPatients">0</div>
+                            <div class="text-sm text-gray-600">Critical Cases</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showLogin() {
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('registerPage').classList.add('hidden');
+            document.getElementById('patientDashboard').classList.add('hidden');
+            document.getElementById('doctorDashboard').classList.add('hidden');
+        }
+
+        function showRegister() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('registerPage').classList.remove('hidden');
+            document.getElementById('patientDashboard').classList.add('hidden');
+            document.getElementById('doctorDashboard').classList.add('hidden');
+        }
+
+        function showDashboard(type) {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('registerPage').classList.add('hidden');
+            
+            if (type === 'patient') {
+                document.getElementById('patientDashboard').classList.remove('hidden');
+                document.getElementById('doctorDashboard').classList.add('hidden');
+                showPatientTab('dashboard');
+            } else if (type === 'doctor') {
+                document.getElementById('doctorDashboard').classList.remove('hidden');
+                document.getElementById('patientDashboard').classList.add('hidden');
+                showDoctorTab('dashboard');
+            }
+        }
+
+        function showPatientTab(tabName) {
+            // Hide all patient tabs
+            document.getElementById('patientDashboardContent').classList.add('hidden');
+            document.getElementById('patientProfileContent').classList.add('hidden');
+            document.getElementById('patientRecordsContent').classList.add('hidden');
+            document.getElementById('patientAppointmentsContent').classList.add('hidden');
+            
+            // Reset all tab buttons
+            const tabs = ['patientDashboardTab', 'patientProfileTab', 'patientRecordsTab', 'patientAppointmentsTab'];
+            tabs.forEach(tab => {
+                document.getElementById(tab).className = 'w-full text-left px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 border-r-2 border-transparent hover:border-blue-600';
+            });
+            
+            // Show selected tab and highlight button
+            if (tabName === 'dashboard') {
+                document.getElementById('patientDashboardContent').classList.remove('hidden');
+                document.getElementById('patientDashboardTab').className = 'w-full text-left px-6 py-3 bg-blue-50 text-blue-600 border-r-2 border-blue-600';
+            } else if (tabName === 'profile') {
+                document.getElementById('patientProfileContent').classList.remove('hidden');
+                document.getElementById('patientProfileTab').className = 'w-full text-left px-6 py-3 bg-blue-50 text-blue-600 border-r-2 border-blue-600';
+            } else if (tabName === 'records') {
+                document.getElementById('patientRecordsContent').classList.remove('hidden');
+                document.getElementById('patientRecordsTab').className = 'w-full text-left px-6 py-3 bg-blue-50 text-blue-600 border-r-2 border-blue-600';
+            } else if (tabName === 'appointments') {
+                document.getElementById('patientAppointmentsContent').classList.remove('hidden');
+                document.getElementById('patientAppointmentsTab').className = 'w-full text-left px-6 py-3 bg-blue-50 text-blue-600 border-r-2 border-blue-600';
+            }
+        }
+
+        function showDoctorTab(tabName) {
+            // Hide all doctor tabs
+            document.getElementById('doctorDashboardContent').classList.add('hidden');
+            document.getElementById('doctorProfile').classList.add('hidden');
+            document.getElementById('viewPatientContent').classList.add('hidden');
+            document.getElementById('patientsContent').classList.add('hidden');
+            
+            // Reset all tab buttons
+            const tabs = ['doctorDashboardTab', 'profileTab', 'viewPatientTab', 'patientsTab'];
+            tabs.forEach(tab => {
+                document.getElementById(tab).className = 'w-full text-left px-6 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 border-r-2 border-transparent hover:border-green-600';
+            });
+            
+            // Show selected tab and highlight button
+            if (tabName === 'dashboard') {
+                document.getElementById('doctorDashboardContent').classList.remove('hidden');
+                document.getElementById('doctorDashboardTab').className = 'w-full text-left px-6 py-3 bg-green-50 text-green-600 border-r-2 border-green-600';
+                updateDoctorDashboardStats();
+            } else if (tabName === 'profile') {
+                document.getElementById('doctorProfile').classList.remove('hidden');
+                document.getElementById('profileTab').className = 'w-full text-left px-6 py-3 bg-green-50 text-green-600 border-r-2 border-green-600';
+                loadDoctorProfile();
+            } else if (tabName === 'viewPatient') {
+                document.getElementById('viewPatientContent').classList.remove('hidden');
+                document.getElementById('viewPatientTab').className = 'w-full text-left px-6 py-3 bg-green-50 text-green-600 border-r-2 border-green-600';
+            } else if (tabName === 'patients') {
+                document.getElementById('patientsContent').classList.remove('hidden');
+                document.getElementById('patientsTab').className = 'w-full text-left px-6 py-3 bg-green-50 text-green-600 border-r-2 border-green-600';
+                updateMyPatientsList();
+            }
+        }
+
+        function showAddRecordForm(recordType = '') {
+            document.getElementById('addRecordForm').classList.remove('hidden');
+            if (recordType) {
+                document.getElementById('recordType').value = recordType;
+            }
+            // Scroll to form
+            document.getElementById('addRecordForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function hideAddRecordForm() {
+            document.getElementById('addRecordForm').classList.add('hidden');
+            // Clear form
+            document.getElementById('updateRecordForm').reset();
+            document.getElementById('updateMessage').classList.add('hidden');
+        }
+
+        function clearPatientView() {
+            document.getElementById('patientData').classList.add('hidden');
+            document.getElementById('addRecordForm').classList.add('hidden');
+            document.getElementById('patientSearchId').value = '';
+            document.getElementById('searchMessage').classList.add('hidden');
+            window.currentViewingPatientId = null;
+        }
+
+        function toggleRecord(button) {
+            const isHidden = button.textContent.trim() === 'Show';
+            const statusSpan = button.previousElementSibling;
+            const recordDiv = button.closest('.border');
+            
+            if (isHidden) {
+                button.textContent = 'Hide';
+                button.className = 'bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm';
+                statusSpan.textContent = 'Visible';
+                statusSpan.className = 'text-sm text-green-600 mr-2';
+                recordDiv.className = 'border border-gray-200 rounded-lg p-4';
+            } else {
+                button.textContent = 'Show';
+                button.className = 'bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm';
+                statusSpan.textContent = 'Hidden';
+                statusSpan.className = 'text-sm text-red-600 mr-2';
+                recordDiv.className = 'border border-red-200 rounded-lg p-4 bg-red-50';
+            }
+        }
+
+        function loadPatientData() {
+            const patientId = document.getElementById('patientSearchId').value.trim();
+            const searchMessage = document.getElementById('searchMessage');
+            
+            if (!patientId) {
+                showMessage('searchMessage', '❌ Please enter a Patient ID', 'error');
+                return;
+            }
+            
+            // Check if patient exists in our system
+            const patientInfo = window.patientProfiles && window.patientProfiles[patientId];
+            
+            if (patientInfo) {
+                // Store current patient ID for record updates
+                window.currentViewingPatientId = patientId;
+                
+                // Update patient name in header
+                document.getElementById('patientDataName').textContent = `Patient: ${patientInfo.name}`;
+                
+                // Update basic information
+                const basicInfo = document.getElementById('patientBasicInfo');
+                const age = patientInfo.dateOfBirth ? calculateAge(patientInfo.dateOfBirth) : 'Not provided';
+                const countryNames = {
+                    'syria': 'Syria',
+                    'afghanistan': 'Afghanistan', 
+                    'somalia': 'Somalia',
+                    'venezuela': 'Venezuela',
+                    'myanmar': 'Myanmar',
+                    'other': 'Other'
+                };
+                const countryDisplay = countryNames[patientInfo.country] || patientInfo.country;
+                
+                basicInfo.innerHTML = `
+                    <p><strong>Name:</strong> ${patientInfo.name}</p>
+                    <p><strong>Age:</strong> ${age} years</p>
+                    <p><strong>Country:</strong> ${countryDisplay}</p>
+                    <p><strong>Phone:</strong> ${patientInfo.phone}</p>
+                    <p><strong>Patient ID:</strong> ${patientId}</p>
+                    ${patientInfo.emergencyContact ? `<p><strong>Emergency:</strong> ${patientInfo.emergencyContact}</p>` : ''}
+                `;
+                
+                // Pre-fill the update form with patient ID
+                document.getElementById('updatePatientId').value = patientId;
+                
+                // Load medical records
+                loadPatientRecordsForDoctor(patientId);
+                
+                document.getElementById('patientData').classList.remove('hidden');
+                showMessage('searchMessage', '✅ Patient found and loaded successfully', 'success');
+            } else {
+                showMessage('searchMessage', '❌ Patient not found. Please check the Patient ID or ensure the patient is registered.', 'error');
+                document.getElementById('patientData').classList.add('hidden');
+            }
+        }
+
+        function loadPatientRecordsForDoctor(patientId) {
+            const recordsSummary = document.getElementById('patientRecordsSummary');
+            const detailedRecords = document.getElementById('patientDetailedRecords');
+            
+            if (!window.medicalRecords || !window.medicalRecords[patientId] || window.medicalRecords[patientId].length === 0) {
+                recordsSummary.innerHTML = '<p class="text-gray-600">No records found</p>';
+                detailedRecords.innerHTML = '<p class="text-gray-500 text-center py-8">No medical records to display</p>';
+                return;
+            }
+            
+            const records = window.medicalRecords[patientId];
+            const uniqueDoctors = [...new Set(records.map(r => r.doctor))];
+            
+            // Summary
+            recordsSummary.innerHTML = `
+                <p class="text-green-600"><strong>Total Records:</strong> ${records.length}</p>
+                <p class="text-blue-600"><strong>Last Visit:</strong> ${records[records.length - 1].date}</p>
+                <p class="text-purple-600"><strong>Doctors:</strong> ${uniqueDoctors.length}</p>
+                <p class="text-orange-600"><strong>Recent:</strong> ${getRecordTypeDisplay(records[records.length - 1].recordType)}</p>
+            `;
+            
+            // Detailed records (most recent first)
+            const sortedRecords = [...records].reverse();
+            detailedRecords.innerHTML = sortedRecords.map((record, index) => `
+                <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h6 class="font-semibold text-gray-800 text-lg">${getRecordTypeDisplay(record.recordType)}</h6>
+                            <p class="text-sm text-gray-600">👨‍⚕️ ${record.doctor} • 📅 ${record.date}</p>
+                        </div>
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold">
+                            #${records.length - index}
+                        </span>
+                    </div>
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-white p-3 rounded border-l-4 border-red-400">
+                            <p class="font-semibold text-gray-700">🩺 Diagnosis:</p>
+                            <p class="text-gray-800">${record.diagnosis}</p>
+                        </div>
+                        <div class="bg-white p-3 rounded border-l-4 border-blue-400">
+                            <p class="font-semibold text-gray-700">📝 Medical Notes:</p>
+                            <p class="text-gray-800">${record.medicalNotes}</p>
+                        </div>
+                        ${record.treatmentPlan ? `
+                        <div class="bg-white p-3 rounded border-l-4 border-green-400">
+                            <p class="font-semibold text-gray-700">💊 Treatment Plan:</p>
+                            <p class="text-gray-800">${record.treatmentPlan}</p>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showUpdateRecordForPatient() {
+            if (window.currentViewingPatientId) {
+                // Pre-fill the patient ID in the update record form
+                document.getElementById('updatePatientId').value = window.currentViewingPatientId;
+                showDoctorTab('updateRecord');
+            }
+        }
+
+        function calculateAge(dateOfBirth) {
+            const birthDate = new Date(dateOfBirth);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+        // Handle update record form submission
+        document.getElementById('updateRecordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const patientId = document.getElementById('updatePatientId').value.trim();
+            const recordType = document.getElementById('recordType').value;
+            const medicalNotes = document.getElementById('medicalNotes').value.trim();
+            const diagnosis = document.getElementById('diagnosis').value.trim();
+            const treatmentPlan = document.getElementById('treatmentPlan').value.trim();
+            
+            if (!patientId || !recordType || !medicalNotes || !diagnosis) {
+                showMessage('updateMessage', '❌ Please fill in all required fields', 'error');
+                return;
+            }
+            
+            // Simulate saving record
+            const recordData = {
+                patientId: patientId,
+                recordType: recordType,
+                medicalNotes: medicalNotes,
+                diagnosis: diagnosis,
+                treatmentPlan: treatmentPlan,
+                date: new Date().toLocaleDateString(),
+                doctor: window.currentDoctorId || 'Unknown Doctor'
+            };
+            
+            // Store the medical record
+            if (!window.medicalRecords) {
+                window.medicalRecords = {};
+            }
+            if (!window.medicalRecords[patientId]) {
+                window.medicalRecords[patientId] = [];
+            }
+            
+            window.medicalRecords[patientId].push(recordData);
+            
+            showMessage('updateMessage', '✅ Medical record saved successfully! This record is now permanent and cannot be edited.', 'success');
+            
+            // Refresh the patient view to show new record
+            if (window.currentViewingPatientId) {
+                loadPatientRecordsForDoctor(window.currentViewingPatientId);
+            }
+            
+            // Clear form after successful save
+            setTimeout(() => {
+                hideAddRecordForm();
+            }, 2000);
+        });
+
+        // Handle patient login form submission
+        document.getElementById('patientLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const patientId = document.getElementById('patientId').value.trim();
+            const password = document.getElementById('patientPassword').value.trim();
+            
+            if (!patientId || !password) {
+                alert('❌ Please fill in all fields');
+                return;
+            }
+            
+            // Check if patient exists in our system
+            const patientInfo = window.patientProfiles && window.patientProfiles[patientId];
+            
+            if (patientInfo) {
+                showDashboard('patient');
+                updatePatientProfile(patientInfo);
+            } else {
+                alert('❌ Patient ID not found. Please register first or check your Patient ID.');
+            }
+        });
+
+        // Handle doctor login form submission
+        document.getElementById('doctorLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const doctorId = document.getElementById('doctorId').value.trim();
+            const password = document.getElementById('doctorPassword').value.trim();
+            
+            if (!doctorId || !password) {
+                alert('❌ Please fill in all fields');
+                return;
+            }
+            
+            // For demo purposes, any doctor credentials work
+            window.currentDoctorId = doctorId;
+            showDashboard('doctor');
+            updateDoctorName(doctorId);
+        });
+
+        // Handle registration form submission
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('fullName').value;
+            const dateOfBirth = document.getElementById('dateOfBirth').value;
+            const country = document.getElementById('country').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('newPassword').value;
+            
+            if (!fullName || !dateOfBirth || !country || !phone || !password) {
+                showMessage('registrationMessage', '❌ Please fill in all required fields', 'error');
+                return;
+            }
+            
+            // Generate patient ID
+            const patientId = 'MH-2024-' + String(Math.floor(Math.random() * 1000)).padStart(3, '0');
+            
+            // Store user data (in real app this would be secure database)
+            const userData = {
+                id: patientId,
+                name: fullName,
+                dateOfBirth: dateOfBirth,
+                country: country,
+                phone: phone,
+                emergencyContact: document.getElementById('emergencyContact').value
+            };
+            
+            // Store patient profile globally
+            if (!window.patientProfiles) {
+                window.patientProfiles = {};
+            }
+            window.patientProfiles[patientId] = userData;
+            
+            showMessage('registrationMessage', `✅ Registration successful! Your Patient ID is: ${patientId}`, 'success');
+            
+            setTimeout(() => {
+                // Update patient dashboard with new user data
+                updatePatientProfile(userData);
+                showDashboard('patient');
+            }, 2000);
+        });
+
+        function showMessage(elementId, message, type) {
+            const messageEl = document.getElementById(elementId);
+            messageEl.textContent = message;
+            messageEl.className = `p-4 rounded-lg ${type === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`;
+            messageEl.classList.remove('hidden');
+        }
+
+        function updatePatientName(name) {
+            const welcomeText = document.querySelector('#patientDashboard h2');
+            if (welcomeText) {
+                welcomeText.textContent = `Welcome back, ${name.split(' ')[0]}! 👋`;
+            }
+        }
+
+        function updateDoctorName(username) {
+            const doctorWelcome = document.querySelector('#doctorDashboard h2');
+            if (doctorWelcome) {
+                doctorWelcome.textContent = `Dr. ${username} 👨‍⚕️`;
+            }
+        }
+
+        // Handle doctor profile form submission
+        document.getElementById('doctorProfileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('doctorFullName').value.trim();
+            const specialization = document.getElementById('doctorSpecialization').value;
+            const license = document.getElementById('doctorLicense').value.trim();
+            const hospital = document.getElementById('doctorHospital').value.trim();
+            const phone = document.getElementById('doctorPhone').value.trim();
+            const email = document.getElementById('doctorEmail').value.trim();
+            const experience = document.getElementById('doctorExperience').value.trim();
+            const languages = document.getElementById('doctorLanguages').value.trim();
+            const bio = document.getElementById('doctorBio').value.trim();
+            
+            if (!fullName || !specialization || !license || !hospital || !phone || !email) {
+                showMessage('doctorProfileMessage', '❌ Please fill in all required fields', 'error');
+                return;
+            }
+            
+            // Store doctor profile data globally
+            const doctorProfile = {
+                fullName: fullName,
+                specialization: specialization,
+                license: license,
+                hospital: hospital,
+                phone: phone,
+                email: email,
+                experience: experience,
+                languages: languages,
+                bio: bio,
+                profileComplete: true,
+                lastUpdated: new Date().toLocaleDateString()
+            };
+            
+            // Store globally for persistence
+            window.currentDoctorProfile = doctorProfile;
+            
+            // Update doctor welcome message
+            const doctorWelcome = document.getElementById('doctorWelcome');
+            if (doctorWelcome) {
+                doctorWelcome.innerHTML = `Dr. ${fullName} 👨‍⚕️`;
+            }
+            
+            const doctorSubtitle = document.getElementById('doctorSubtitle');
+            if (doctorSubtitle) {
+                doctorSubtitle.textContent = `${specialization} • ${hospital}`;
+            }
+            
+            // Update profile status
+            updateDoctorProfileStatus(doctorProfile);
+            
+            // Show professional summary
+            updateProfessionalSummary(doctorProfile);
+            
+            showMessage('doctorProfileMessage', '✅ Profile updated successfully! Your information is now complete.', 'success');
+        });
+
+        function updateDoctorProfileStatus(profile) {
+            const requiredFields = ['fullName', 'specialization', 'license', 'hospital', 'phone', 'email'];
+            const optionalFields = ['experience', 'languages', 'bio'];
+            
+            let completedRequired = 0;
+            let completedOptional = 0;
+            
+            requiredFields.forEach(field => {
+                if (profile[field] && profile[field].trim()) {
+                    completedRequired++;
+                }
+            });
+            
+            optionalFields.forEach(field => {
+                if (profile[field] && profile[field].trim()) {
+                    completedOptional++;
+                }
+            });
+            
+            const totalCompleted = completedRequired + completedOptional;
+            const totalFields = requiredFields.length + optionalFields.length;
+            const completionPercentage = Math.round((totalCompleted / totalFields) * 100);
+            
+            // Update profile status indicator
+            const statusElement = document.getElementById('profileStatus');
+            const statusTextElement = document.getElementById('profileStatusText');
+            const completenessElement = document.getElementById('profileCompleteness');
+            
+            if (completedRequired === requiredFields.length) {
+                statusElement.className = 'text-green-500 mr-2';
+                statusTextElement.textContent = 'Profile Complete';
+            } else {
+                statusElement.className = 'text-orange-500 mr-2';
+                statusTextElement.textContent = 'Profile Incomplete';
+            }
+            
+            completenessElement.textContent = `${completionPercentage}%`;
+            
+            // Update statistics
+            updateDoctorProfileStats();
+        }
+
+        function updateProfessionalSummary(profile) {
+            const professionalInfo = document.getElementById('professionalInfo');
+            const professionalSummary = document.getElementById('professionalSummary');
+            
+            professionalSummary.innerHTML = `
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-sm text-gray-600"><strong>👨‍⚕️ Full Name:</strong></p>
+                        <p class="text-gray-800 mb-3">${profile.fullName}</p>
+                        
+                        <p class="text-sm text-gray-600"><strong>🏥 Specialization:</strong></p>
+                        <p class="text-gray-800 mb-3">${profile.specialization}</p>
+                        
+                        <p class="text-sm text-gray-600"><strong>📋 License:</strong></p>
+                        <p class="text-gray-800 mb-3">${profile.license}</p>
+                        
+                        <p class="text-sm text-gray-600"><strong>🏢 Hospital/Clinic:</strong></p>
+                        <p class="text-gray-800">${profile.hospital}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600"><strong>📞 Phone:</strong></p>
+                        <p class="text-gray-800 mb-3">${profile.phone}</p>
+                        
+                        <p class="text-sm text-gray-600"><strong>📧 Email:</strong></p>
+                        <p class="text-gray-800 mb-3">${profile.email}</p>
+                        
+                        ${profile.experience ? `
+                        <p class="text-sm text-gray-600"><strong>⏱️ Experience:</strong></p>
+                        <p class="text-gray-800 mb-3">${profile.experience} years</p>
+                        ` : ''}
+                        
+                        ${profile.languages ? `
+                        <p class="text-sm text-gray-600"><strong>🌍 Languages:</strong></p>
+                        <p class="text-gray-800">${profile.languages}</p>
+                        ` : ''}
+                    </div>
+                </div>
+                
+                ${profile.bio ? `
+                <div class="mt-4 pt-4 border-t border-gray-300">
+                    <p class="text-sm text-gray-600 mb-2"><strong>📝 Professional Bio:</strong></p>
+                    <p class="text-gray-800 leading-relaxed">${profile.bio}</p>
+                </div>
+                ` : ''}
+            `;
+            
+            professionalInfo.classList.remove('hidden');
+        }
+
+        function updateDoctorProfileStats() {
+            // Update patients served count
+            const uniquePatients = window.medicalRecords ? Object.keys(window.medicalRecords).length : 0;
+            document.getElementById('patientsServed').textContent = uniquePatients;
+            
+            // Update records created count
+            let totalRecords = 0;
+            if (window.medicalRecords) {
+                Object.values(window.medicalRecords).forEach(records => {
+                    totalRecords += records.length;
+                });
+            }
+            document.getElementById('recordsCreated').textContent = totalRecords;
+        }
+
+        function loadDoctorProfile() {
+            // Load existing profile data if available
+            if (window.currentDoctorProfile) {
+                const profile = window.currentDoctorProfile;
+                
+                document.getElementById('doctorFullName').value = profile.fullName || '';
+                document.getElementById('doctorSpecialization').value = profile.specialization || '';
+                document.getElementById('doctorLicense').value = profile.license || '';
+                document.getElementById('doctorHospital').value = profile.hospital || '';
+                document.getElementById('doctorPhone').value = profile.phone || '';
+                document.getElementById('doctorEmail').value = profile.email || '';
+                document.getElementById('doctorExperience').value = profile.experience || '';
+                document.getElementById('doctorLanguages').value = profile.languages || '';
+                document.getElementById('doctorBio').value = profile.bio || '';
+                
+                // Update status and summary
+                updateDoctorProfileStatus(profile);
+                if (profile.profileComplete) {
+                    updateProfessionalSummary(profile);
+                }
+            }
+        }
+
+        function updatePatientProfile(userData) {
+            // Store current patient data globally
+            window.currentPatientData = userData;
+            
+            // Update welcome message
+            const welcomeText = document.getElementById('patientWelcome');
+            const patientIdText = document.getElementById('patientIdDisplay');
+            
+            if (welcomeText) {
+                welcomeText.textContent = `Welcome, ${userData.name.split(' ')[0]}! 👋`;
+            }
+            if (patientIdText) {
+                patientIdText.textContent = `Patient ID: ${userData.id}`;
+            }
+            
+            // Update profile form fields
+            const nameInput = document.getElementById('patientNameField');
+            const phoneInput = document.getElementById('patientPhoneField');
+            const countryInput = document.getElementById('patientCountryField');
+            const ageInput = document.getElementById('patientAgeField');
+            const idInput = document.getElementById('patientIdField');
+            const dobInput = document.getElementById('patientDobField');
+            const emergencyInput = document.getElementById('patientEmergencyField');
+            
+            if (nameInput) nameInput.value = userData.name;
+            if (phoneInput) phoneInput.value = userData.phone;
+            if (idInput) idInput.value = userData.id;
+            if (dobInput) dobInput.value = userData.dateOfBirth;
+            if (emergencyInput) emergencyInput.value = userData.emergencyContact || '';
+            if (countryInput) countryInput.value = userData.country;
+            
+            // Calculate and update age
+            if (ageInput && userData.dateOfBirth) {
+                const age = calculateAge(userData.dateOfBirth);
+                ageInput.value = `${age} years`;
+            }
+            
+            // Load medical records for this patient
+            loadPatientMedicalRecords(userData.id);
+            
+            // Update dashboard statistics
+            updatePatientDashboardStats(userData.id);
+            
+            // Update recent activity
+            updateRecentActivity(userData.id);
+        }
+
+        // Handle patient profile form submission
+        document.getElementById('patientProfileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('patientNameField').value.trim();
+            const phone = document.getElementById('patientPhoneField').value.trim();
+            const country = document.getElementById('patientCountryField').value;
+            const dob = document.getElementById('patientDobField').value;
+            const emergency = document.getElementById('patientEmergencyField').value.trim();
+            
+            if (!name || !phone || !country) {
+                showMessage('profileUpdateMessage', '❌ Please fill in all required fields', 'error');
+                return;
+            }
+            
+            // Update the stored patient data
+            if (window.currentPatientData) {
+                window.currentPatientData.name = name;
+                window.currentPatientData.phone = phone;
+                window.currentPatientData.country = country;
+                window.currentPatientData.dateOfBirth = dob;
+                window.currentPatientData.emergencyContact = emergency;
+                
+                // Update in global storage
+                if (window.patientProfiles && window.currentPatientData.id) {
+                    window.patientProfiles[window.currentPatientData.id] = window.currentPatientData;
+                }
+                
+                // Update welcome message with new name
+                const welcomeText = document.getElementById('patientWelcome');
+                if (welcomeText) {
+                    welcomeText.textContent = `Welcome, ${name.split(' ')[0]}! 👋`;
+                }
+                
+                // Update age if DOB changed
+                if (dob) {
+                    const age = calculateAge(dob);
+                    document.getElementById('patientAgeField').value = `${age} years`;
+                }
+                
+                showMessage('profileUpdateMessage', '✅ Profile updated successfully!', 'success');
+                
+                // Update recent activity
+                updateRecentActivity(window.currentPatientData.id, 'Profile updated');
+            }
+        });
+
+        function updateRecentActivity(patientId, activity = null) {
+            const recentActivity = document.getElementById('recentActivity');
+            
+            if (activity) {
+                // Add new activity to the top
+                const activityItem = document.createElement('div');
+                activityItem.className = 'flex items-center p-3 bg-blue-50 rounded-lg';
+                activityItem.innerHTML = `
+                    <span class="text-2xl mr-3">✅</span>
+                    <div>
+                        <p class="font-semibold text-gray-800">${activity}</p>
+                        <p class="text-sm text-gray-600">${new Date().toLocaleDateString()}</p>
+                    </div>
+                `;
+                recentActivity.insertBefore(activityItem, recentActivity.firstChild);
+            }
+            
+            // Add medical record activities if they exist
+            if (window.medicalRecords && window.medicalRecords[patientId]) {
+                const records = window.medicalRecords[patientId];
+                if (records.length > 0) {
+                    const lastRecord = records[records.length - 1];
+                    const recordActivity = document.createElement('div');
+                    recordActivity.className = 'flex items-center p-3 bg-green-50 rounded-lg';
+                    recordActivity.innerHTML = `
+                        <span class="text-2xl mr-3">🏥</span>
+                        <div>
+                            <p class="font-semibold text-gray-800">New medical record added</p>
+                            <p class="text-sm text-gray-600">${lastRecord.date} • ${lastRecord.doctor}</p>
+                        </div>
+                    `;
+                    
+                    // Check if this activity already exists
+                    const existingActivities = recentActivity.querySelectorAll('.bg-green-50');
+                    if (existingActivities.length === 0) {
+                        recentActivity.appendChild(recordActivity);
+                    }
+                }
+            }
+        }
+
+        function loadPatientMedicalRecords(patientId) {
+            const recordsList = document.getElementById('medicalRecordsList');
+            
+            if (!window.medicalRecords || !window.medicalRecords[patientId] || window.medicalRecords[patientId].length === 0) {
+                recordsList.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <div class="text-4xl mb-4">📋</div>
+                        <p class="text-lg">No medical records yet</p>
+                        <p class="text-sm">Your medical records will appear here when doctors add them</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const records = window.medicalRecords[patientId];
+            recordsList.innerHTML = records.map(record => `
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h4 class="font-semibold text-gray-800">${getRecordTypeDisplay(record.recordType)}</h4>
+                            <p class="text-sm text-gray-600">${record.doctor} • ${record.date}</p>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-sm text-green-600 mr-2">Visible</span>
+                            <button onclick="toggleRecord(this)" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
+                                Hide
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-2"><strong>Diagnosis:</strong> ${record.diagnosis}</p>
+                    <p class="text-gray-700 mb-2"><strong>Notes:</strong> ${record.medicalNotes}</p>
+                    ${record.treatmentPlan ? `<p class="text-gray-700"><strong>Treatment:</strong> ${record.treatmentPlan}</p>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function updatePatientDashboardStats(patientId) {
+            const recordsCountEl = document.getElementById('recordsCount');
+            const lastVisitEl = document.getElementById('lastVisit');
+            const doctorsCountEl = document.getElementById('doctorsCount');
+            
+            if (!window.medicalRecords || !window.medicalRecords[patientId] || window.medicalRecords[patientId].length === 0) {
+                recordsCountEl.textContent = '0';
+                lastVisitEl.textContent = 'No visits yet';
+                doctorsCountEl.textContent = '0';
+                return;
+            }
+            
+            const records = window.medicalRecords[patientId];
+            const uniqueDoctors = [...new Set(records.map(r => r.doctor))];
+            
+            recordsCountEl.textContent = records.length;
+            lastVisitEl.textContent = records[records.length - 1].date;
+            doctorsCountEl.textContent = uniqueDoctors.length;
+        }
+
+        function getRecordTypeDisplay(recordType) {
+            const types = {
+                'checkup': 'General Checkup',
+                'vaccination': 'Vaccination Record',
+                'consultation': 'Specialist Consultation',
+                'emergency': 'Emergency Visit',
+                'mental-health': 'Mental Health Consultation'
+            };
+            return types[recordType] || recordType;
+        }
+
+        function updateDoctorDashboardStats() {
+            // Count unique patients from medical records
+            const uniquePatients = new Set();
+            let totalRecords = 0;
+            let emergencyCount = 0;
+            
+            if (window.medicalRecords) {
+                Object.keys(window.medicalRecords).forEach(patientId => {
+                    uniquePatients.add(patientId);
+                    const records = window.medicalRecords[patientId];
+                    totalRecords += records.length;
+                    
+                    // Count emergency records from this week
+                    const oneWeekAgo = new Date();
+                    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+                    
+                    records.forEach(record => {
+                        if (record.recordType === 'emergency') {
+                            const recordDate = new Date(record.date);
+                            if (recordDate >= oneWeekAgo) {
+                                emergencyCount++;
+                            }
+                        }
+                    });
+                });
+            }
+            
+            // Update dashboard stats
+            document.getElementById('totalPatientsCount').textContent = uniquePatients.size;
+            document.getElementById('recordsAddedCount').textContent = totalRecords;
+            document.getElementById('activeCasesCount').textContent = uniquePatients.size;
+            document.getElementById('emergencyCount').textContent = emergencyCount;
+            
+            // Update recent activity
+            updateDoctorRecentActivity();
+        }
+
+        function updateDoctorRecentActivity() {
+            const recentActivity = document.getElementById('doctorRecentActivity');
+            
+            // Clear existing activities except welcome message
+            const welcomeMessage = recentActivity.querySelector('.bg-gray-50');
+            recentActivity.innerHTML = '';
+            if (welcomeMessage) {
+                recentActivity.appendChild(welcomeMessage);
+            }
+            
+            // Add recent medical records
+            if (window.medicalRecords) {
+                const allRecords = [];
+                Object.keys(window.medicalRecords).forEach(patientId => {
+                    window.medicalRecords[patientId].forEach(record => {
+                        allRecords.push({...record, patientId});
+                    });
+                });
+                
+                // Sort by date (most recent first) and take top 3
+                allRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
+                const recentRecords = allRecords.slice(0, 3);
+                
+                recentRecords.forEach(record => {
+                    const patientName = window.patientProfiles && window.patientProfiles[record.patientId] 
+                        ? window.patientProfiles[record.patientId].name 
+                        : record.patientId;
+                    
+                    const activityItem = document.createElement('div');
+                    activityItem.className = 'flex items-center p-3 bg-green-50 rounded-lg';
+                    activityItem.innerHTML = `
+                        <span class="text-2xl mr-3">📋</span>
+                        <div>
+                            <p class="font-semibold text-gray-800">Added ${getRecordTypeDisplay(record.recordType)}</p>
+                            <p class="text-sm text-gray-600">${patientName} • ${record.date}</p>
+                        </div>
+                    `;
+                    recentActivity.appendChild(activityItem);
+                });
+            }
+        }
+
+        function updateMyPatientsList() {
+            const patientsList = document.getElementById('myPatientsList');
+            const patientsCount = document.getElementById('myPatientsCount');
+            
+            if (!window.medicalRecords || Object.keys(window.medicalRecords).length === 0) {
+                patientsList.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <div class="text-4xl mb-4">👥</div>
+                        <p class="text-lg">No patients assigned yet</p>
+                        <p class="text-sm">Patients will appear here when you add medical records for them</p>
+                    </div>
+                `;
+                patientsCount.textContent = '0';
+                return;
+            }
+            
+            const patients = Object.keys(window.medicalRecords).map(patientId => {
+                const records = window.medicalRecords[patientId];
+                const patientInfo = window.patientProfiles && window.patientProfiles[patientId] 
+                    ? window.patientProfiles[patientId] 
+                    : { name: 'Unknown Patient', country: 'Unknown' };
+                
+                const lastRecord = records[records.length - 1];
+                const hasEmergency = records.some(r => r.recordType === 'emergency');
+                
+                return {
+                    id: patientId,
+                    name: patientInfo.name,
+                    country: patientInfo.country,
+                    recordCount: records.length,
+                    lastVisit: lastRecord.date,
+                    lastRecordType: lastRecord.recordType,
+                    status: hasEmergency ? 'critical' : 'active'
+                };
+            });
+            
+            patientsCount.textContent = patients.length;
+            
+            patientsList.innerHTML = patients.map(patient => {
+                const statusColor = patient.status === 'critical' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800';
+                const countryNames = {
+                    'syria': 'Syria',
+                    'afghanistan': 'Afghanistan', 
+                    'somalia': 'Somalia',
+                    'venezuela': 'Venezuela',
+                    'myanmar': 'Myanmar',
+                    'other': 'Other'
+                };
+                const countryDisplay = countryNames[patient.country] || patient.country;
+                
+                return `
+                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <div class="flex items-center mb-2">
+                                    <h4 class="font-semibold text-gray-800 text-lg mr-3">${patient.name}</h4>
+                                    <span class="text-sm text-gray-500">🌍 ${countryDisplay}</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-2">
+                                    <strong>ID:</strong> ${patient.id} • 
+                                    <strong>Records:</strong> ${patient.recordCount} • 
+                                    <strong>Last Visit:</strong> ${patient.lastVisit}
+                                </p>
+                                <p class="text-sm text-gray-600">
+                                    <strong>Recent:</strong> ${getRecordTypeDisplay(patient.lastRecordType)}
+                                </p>
+                            </div>
+                            <div class="flex flex-col gap-2 items-end">
+                                <span class="${statusColor} px-3 py-1 rounded-full text-xs font-semibold">
+                                    ${patient.status === 'critical' ? '🚨 Critical' : '✅ Active'}
+                                </span>
+                                <button onclick="viewPatientFromList('${patient.id}')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm font-semibold">
+                                    View Records
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Update patient statistics
+            const newPatients = patients.filter(p => {
+                const oneMonthAgo = new Date();
+                oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+                return new Date(p.lastVisit) >= oneMonthAgo;
+            }).length;
+            
+            const criticalPatients = patients.filter(p => p.status === 'critical').length;
+            
+            document.getElementById('newPatientsCount').textContent = newPatients;
+            document.getElementById('followUpCount').textContent = '0'; // Placeholder
+            document.getElementById('vaccinationsDue').textContent = '0'; // Placeholder
+            document.getElementById('criticalPatients').textContent = criticalPatients;
+        }
+
+        function viewPatientFromList(patientId) {
+            // Switch to view patient tab and load the patient
+            document.getElementById('patientSearchId').value = patientId;
+            showDoctorTab('viewPatient');
+            loadPatientData();
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97efc26417377ef4',t:'MTc1Nzg1MTU5OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
